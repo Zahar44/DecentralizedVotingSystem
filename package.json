@@ -1,0 +1,12 @@
+{
+  "name": "decentralizedvotingsystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "local:deploy-sc": "cd ./smartcontracts/ && npx hardhat run ./scripts/deploy.ts --network localhost"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

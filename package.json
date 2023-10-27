@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "local:deploy-sc": "cd ./smartcontracts/ && npx hardhat run ./scripts/deploy.ts --network localhost"
+    "local:deploy-sc": "cd ./smartcontracts/ && npx hardhat run ./scripts/deploy.ts --network localhost",
+    "rebuild:web": "docker-compose up -d --no-deps --build web",
+    "rebuild:server": "docker-compose up -d --no-deps --build server"
   },
   "keywords": [],
   "author": "",

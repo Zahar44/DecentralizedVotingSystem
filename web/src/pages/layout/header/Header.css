@@ -1,0 +1,9 @@
+.header {
+    display: flex;
+    flex-direction: row;
+}
+
+.header > div {
+    padding: 5px;
+    margin: 0 5px 5px 0;
+}

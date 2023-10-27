@@ -1,42 +1,31 @@
-import { useEffect, useState } from 'react';
 import './App.css'
-import { useSDK } from '@metamask/sdk-react';
-import { Maybe } from '@metamask/providers/dist/utils';
+import { Route, Routes } from "react-router-dom";
+import Login from './pages/login/Login';
+import NoPage from './pages/nopage/NoPage';
+import Layout from './pages/layout/Layout';
+import Admin from './pages/admin/Admin';
+import Require from './require';
+import Context from './context';
 
 function App() {
-  const [account, setAccount] = useState<string>();
-  const { sdk, connected, connecting, provider, chainId } = useSDK();
+    return (
+        <Routes>
+            <Route element={<Context.Web3/>}>
+                <Route path='/login' element={<Login/>} />
+                <Route path='*' element={<NoPage/>} />
 
-  const connect = async () => {
-    try {
-      const accounts = await sdk?.connect() as Maybe<string[]>;
-			console.log(accounts);
-			setAccount(accounts?.[0]);
-    } catch(err) {
-      console.warn(`failed to connect..`, err);
-    }
-  };
+                <Route element={<Require.Login/>}>
+                    <Route element={<Context.Protocol/>}>
+                        <Route path='/' element={<Layout/>}/>
 
-	useEffect(() => {
-		connect();
-	}, []);
-
-  return (
-    <div className="App">
-      <button style={{ padding: 10, margin: 10 }} onClick={connect}>
-        Connect
-      </button>
-      {connected && (
-        <div>
-          <>
-            {chainId && `Connected chain: ${chainId}`}
-            <p></p>
-            {account && `Connected account123: ${account}`}
-          </>
-        </div>
-      )}
-    </div>
-	);
+                        <Route element={<Require.AnyPermissions/>}>
+                            <Route path='/admin' element={<Admin/>}/>
+                        </Route>
+                    </Route>
+                </Route>
+            </Route>
+        </Routes>
+    );
 }
 
 export default App

@@ -2,33 +2,39 @@
 pragma solidity 0.8.20;
 
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { ProtocolPermission } from "./ProtocolPermission.sol";
+import { IProtocol } from "./IProtocol.sol";
 
-contract Protocol is Ownable {
-    enum ContractTypes {
-        VotingToken
-    }
-
-    struct TypeAndAddress {
-        ContractTypes contractType;
-        address contractAddress;
-    }
-
+contract Protocol is IProtocol, ProtocolPermission {
+    mapping(address => uint32) permissionsByUser;
     mapping(ContractTypes => address) addressByType; 
 
-    constructor(TypeAndAddress[] memory data) Ownable(msg.sender) {
-        setAddress(data);
+    modifier checkPermissions(uint64 permissions) {
+        require((permissionsByUser[msg.sender] & permissions) != 0, "Not allowed");
+        _;
+    }
+
+    constructor() {
+        permissionsByUser[msg.sender] = allPermissions;
     }
 
     function getContractAddress(ContractTypes _type) external view returns(address) {
         return addressByType[_type];
     }
 
-    function setAddress(TypeAndAddress[] memory data) onlyOwner public {
+    function getPermissions(address user) external view returns(uint32) {
+        return permissionsByUser[user];
+    }
+
+    function setPermissions(address _user, uint32 _permissions) external {
+        permissionsByUser[_user] = _permissions;
+    }
+
+    function setAddress(TypeAndAddress[] memory data) checkPermissions(modifyAddressPermission) public {
         _setAddress(data);
     }
 
-    function setAddress(ContractTypes _type, address _address) onlyOwner public {
+    function setAddress(ContractTypes _type, address _address) checkPermissions(modifyAddressPermission) public {
         _setAddress(_type, _address);
     }
 

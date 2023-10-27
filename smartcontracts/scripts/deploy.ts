@@ -1,12 +1,16 @@
 import { ethers } from "hardhat";
-import { Protocol } from "../typechain-types";
+import { IProtocol } from "../typechain-types/contracts/Protocol";
 
 async function main() {
 
-  const protocolContractArgs: Protocol.TypeAndAddressStruct[] = [];
+  const protocolContractArgs: IProtocol.TypeAndAddressStruct[] = [];
   let contractType = 0;
 
-  const votingToken = await ethers.deployContract("VotingToken", ["VotingToken", "VT"]);
+  const protocolContractFactory = await ethers.getContractFactory('Protocol');
+  const protocolContractDeployTx = await protocolContractFactory.deploy();
+  await protocolContractDeployTx.waitForDeployment();
+
+  const votingToken = await ethers.deployContract("VotingToken", ["VotingToken", "VT", protocolContractDeployTx.target]);
   await votingToken.waitForDeployment();
 
   protocolContractArgs.push({
@@ -14,11 +18,7 @@ async function main() {
     contractAddress: votingToken.target,
   });
 
-  const protocolContractFactory = await ethers.getContractFactory('Protocol');
-  const protocolContractDeployTx = await protocolContractFactory.deploy(protocolContractArgs);
-  await protocolContractDeployTx.waitForDeployment();
-  const t = protocolContractDeployTx.interface.encodeFunctionData("getContractAddress", [0]);
-  console.log(t);
+  protocolContractDeployTx["setAddress((uint8,address)[])"](protocolContractArgs);
 
   console.log(`Protocol deployed: ${await protocolContractDeployTx.getAddress()}`);
 }

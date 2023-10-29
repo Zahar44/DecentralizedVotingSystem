@@ -1,0 +1,8 @@
+.admin {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin > div, button {
+    margin: 10px;
+}

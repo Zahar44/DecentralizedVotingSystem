@@ -1,0 +1,1 @@
+export const Web3Connection = Symbol('Web3Connection');

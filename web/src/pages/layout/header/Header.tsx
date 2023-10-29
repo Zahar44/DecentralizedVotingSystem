@@ -1,6 +1,6 @@
 import "./Header.css"
 import { useContext } from "react";
-import { VotingPowerContext } from "../../protocol/VotingPower";
+import { VotingPowerContext } from "../../../context/VotingPower";
 import { Web3Context } from "../../../context/Web3";
 
 function Header() {

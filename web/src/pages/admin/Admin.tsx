@@ -1,21 +1,18 @@
+import './Admin.css';
 import { useContext } from "react";
 import { ProtocolContext } from "../../context/Protocol";
 import { ProtocolAction } from "../../utils/ProtocolHandler";
-import { Web3Context } from "../../context/Web3";
-import { ethers } from "ethers";
+import MintButton from "./mint/MintButton";
+import { useNavigate } from 'react-router-dom';
 
 function Admin() {
-    const { userAddress } = useContext(Web3Context);
-    const { permissions, votingToken } = useContext(ProtocolContext);
+    const { permissions } = useContext(ProtocolContext);
+    const navigate = useNavigate();
 
     let buttons: JSX.Element[] = [];
 
     if (permissions?.isActionAllowed(ProtocolAction.MintVotingPower)) {
-        async function handleMint() {
-            console.log(ethers.parseEther('1'));
-            await votingToken?.mint(userAddress, ethers.parseEther('1'));
-        }
-        buttons.push((<button key="mint-button" onClick={handleMint}>Mint</button>));
+        buttons.push((<MintButton key="mint-button"/>));
     }
     
     if (permissions?.isActionAllowed(ProtocolAction.SetAddress)) {
@@ -26,10 +23,15 @@ function Admin() {
         buttons.push((<button key="set-permission-button">Set Permission</button>));
     }
 
+    const onBackClick = () => {
+        navigate(-1);
+    }
+    buttons.push((<button key="back" onClick={onBackClick}>Back</button>));
+
     return (
-        <>
+        <div className='admin'>
             { buttons }
-        </>
+        </div>
     )
 }
 

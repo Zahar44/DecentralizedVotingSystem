@@ -77,7 +77,11 @@ function Web3Provider() {
     }, []);
 
     if (!provider || !signer) {
-        return <></>
+        return (
+            <>
+                Waiting for web3 connection
+            </>
+        )
     }
 
     if (!correctChain) {

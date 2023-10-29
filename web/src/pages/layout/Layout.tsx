@@ -1,16 +1,16 @@
 import "./Layout.css";
-import VotingPowerProvider from "../protocol/VotingPower";
 import Header from "./header/Header";
 import Voting from "./voting/Voting";
+import Context from "../../context";
 
 function Layout() {
     return (
-        <VotingPowerProvider>
+        <Context.VotingPower>
             <div className="layout">
                 <Header/>
                 <Voting/>
             </div>
-        </VotingPowerProvider>
+        </Context.VotingPower>
     )
 }
 

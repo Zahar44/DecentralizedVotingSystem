@@ -4,16 +4,16 @@ services:
         ports:
             - 8545:8545
         command: npx hardhat node
-    server:
-        build: './server'
-        ports:
-            - 3000:3000
-        volumes:
-            - ./server:/usr/src/app
-            - /usr/src/app/node_modules/
-        depends_on:
-            - blockchain-node
-        command: npm run start:dev
+    # blocks-polling:
+    #     build: './server'
+    #     ports:
+    #         - 3000:3000
+    #     volumes:
+    #         - ./server:/usr/src/app
+    #         - /usr/src/app/node_modules/
+    #     depends_on:
+    #         - blockchain-node
+    #     command: npm run start:bp:dev
     web:
         build: './web'
         ports:
@@ -21,9 +21,18 @@ services:
         volumes:
             - ./web:/usr/src/app
             - /usr/src/app/node_modules/
-        depends_on:
-            - blockchain-node
-            - server
         environment:
             - CHOKIDAR_USEPOLLING=true
         command: npm run dev
+    database:
+        image: 'postgres:latest'
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: root
+    rabbitmq:
+        image: rabbitmq
+        command: rabbitmq-server
+        ports:
+            - 5672:5672
+            - 15672:15672

@@ -1,0 +1,21 @@
+.mint-modal {
+    width: 50%;
+    height: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    transform: translate(50%, 50%);
+    border-radius: 100px;
+}
+
+.mint-modal-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.mint-modal-content > div {
+    margin: 10px;
+}

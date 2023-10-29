@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import { ProtocolContext } from "../../context/Protocol";
-import { Web3Context } from "../../context/Web3";
+import { ProtocolContext } from "./Protocol";
+import { Web3Context } from "./Web3";
 import { ethers } from "ethers";
 
 interface VotingPowerContext {
@@ -19,7 +19,7 @@ export function VotingPowerProvider({ children }: React.PropsWithChildren) {
     let [power, setPower] = useState('0');
 
     useEffect(() => {
-        votingToken?.balanceOf(userAddress).then((power) => {
+        votingToken?.balanceOf(userAddress!).then((power) => {
             setPower((+ethers.formatEther(power)).toFixed(2));
         });
     }, [votingToken]);

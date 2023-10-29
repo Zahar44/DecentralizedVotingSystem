@@ -1,12 +1,11 @@
-import { Contract } from "ethers";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ERC20TokenABI } from "../abi/Tokens";
 import { ProtocolHandler, ProtocolPermissions } from "../utils/ProtocolHandler";
 import { Web3Context } from "./Web3";
 import { Outlet } from "react-router-dom";
+import { VotingTokenHandler } from "../utils/VotingTokenHandler";
 
 interface ProtocolContext {
-    votingToken: Contract | null;
+    votingToken: VotingTokenHandler | null;
     protocolHandler: ProtocolHandler | null;
     permissions: ProtocolPermissions | null;
 }
@@ -21,7 +20,7 @@ export const ProtocolContext = createContext<ProtocolContext>(defaultContextValu
 
 export function ProtocolProvider() {
     const { signer, userAddress } = useContext(Web3Context);
-    const [ votingToken, setVotingToken ] = useState<Contract | null>(null);
+    const [ votingToken, setVotingToken ] = useState<VotingTokenHandler | null>(null);
     const [ permissions, setPermissions ] = useState<ProtocolPermissions | null>(null);
 
     const context: ProtocolContext = {
@@ -36,7 +35,7 @@ export function ProtocolProvider() {
     useEffect(() => {
         context.protocolHandler?.getContractAddress(0).then((address) => {
             console.log(address);
-            setVotingToken(new Contract(address, Object.values(ERC20TokenABI), signer));
+            setVotingToken(new VotingTokenHandler(address, signer));
         });
     }, []);
 

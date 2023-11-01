@@ -3,6 +3,9 @@
     "hardhat": "^2.18.3",
     "typechain": "^8.3.2"
   },
+  "scripts": {
+    "local:deploy": "npx hardhat run ./scripts/deploy.ts --network localhost"
+  },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
     "@openzeppelin/contracts": "^5.0.0"

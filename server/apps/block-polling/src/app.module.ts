@@ -3,8 +3,6 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { BlockPollingModule } from "./modules/block-polling/block-polling.module";
 import { PrismaModule } from "./modules/prisma/prisma.module";
-import { ClientsModule, Transport } from "@nestjs/microservices";
-import { QueueClient, QueueTypes } from "@app/core/queue";
 
 @Module({
     imports: [

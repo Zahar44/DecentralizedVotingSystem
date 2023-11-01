@@ -18,7 +18,7 @@ async function main() {
     contractAddress: votingToken.target,
   });
 
-  protocolContractDeployTx["setAddress((uint8,address)[])"](protocolContractArgs);
+  await protocolContractDeployTx["setAddress((uint8,address)[])"](protocolContractArgs);
 
   console.log(`Protocol deployed: ${await protocolContractDeployTx.getAddress()}`);
 }

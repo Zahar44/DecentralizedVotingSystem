@@ -14,4 +14,6 @@ contract VotingToken is ERC20, ProtocolBased {
     function mint(address to, uint256 amount) checkPermissions(mintVotingPower) external {
         _mint(to, amount);
     }
+    
+    fallback() external {}
 }

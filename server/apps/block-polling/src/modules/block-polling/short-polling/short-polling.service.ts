@@ -4,20 +4,20 @@ import Web3, { Block } from "web3";
 import { IBlocksPollingService } from "../../../common/blocks-polling-service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { BlockType } from "apps/block-polling/prisma/client";
-import { QueueClient, QueuePatterns } from "@app/core/queue";
-import { ClientProxy } from "@nestjs/microservices";
+import { DispatchBlockService } from "../../dispatch-block/dispatch-block.service";
 
 @Injectable()
 export class ShortPollingService extends IBlocksPollingService implements OnApplicationShutdown {
     private readonly logger = new Logger(ShortPollingService.name);
-    private blockToPollNext: bigint = 1n;
+    private latestPoll: Promise<void>;
+    private lastPolledBlock: bigint = 1n;
     private pollingIntervalTime: number = 1000;
     private pollingTimeout: NodeJS.Timeout;
 
     constructor(
         @Inject(Web3Connection) private readonly web3: Web3,
         private readonly prisma: PrismaService,
-        @Inject(QueueClient) private readonly queueClient: ClientProxy,
+        private readonly dispatcher: DispatchBlockService,
     ) {
         super();
     }
@@ -37,24 +37,25 @@ export class ShortPollingService extends IBlocksPollingService implements OnAppl
             },
             update: {}
         });
-        this.blockToPollNext = block.number + 1n;
+        this.lastPolledBlock = block.number;
 
-        this.logger.debug(`Polling started from block ${this.blockToPollNext} with interval ${this.pollingIntervalTime}ms`);
-        this.poll();
+        this.logger.debug(`Polling started from block ${this.lastPolledBlock} with interval ${this.pollingIntervalTime}ms`);
+        this.latestPoll = this.poll();
     }
 
     private async poll() {
+        await this.latestPoll;
         const latestBlockNumber = await this.web3.eth.getBlockNumber();
-        this.logger.debug(`Latest processed: ${this.blockToPollNext - 1n}, Latest on node: ${latestBlockNumber}`);
 
-        if (latestBlockNumber <= this.blockToPollNext) {
-            this.logger.debug(`No new blocks`);
+        if (latestBlockNumber <= this.lastPolledBlock) {
+            return this.schedulePoll();
         }
 
-        const blocks = await this.getUnprocessedBlocks(latestBlockNumber - this.blockToPollNext + 1n);
+        const blocks = await this.getUnprocessedBlocks(latestBlockNumber - this.lastPolledBlock);
         await this.processBlocks(blocks);
 
-        this.pollingTimeout = setTimeout(() => this.poll(), this.pollingIntervalTime);
+        this.logger.debug(`Latest processed: ${this.lastPolledBlock}, Latest on node: ${latestBlockNumber}`);
+        this.schedulePoll();
     }
 
     private async getUnprocessedBlocks(count: bigint) {
@@ -62,8 +63,8 @@ export class ShortPollingService extends IBlocksPollingService implements OnAppl
 
         const initialCount = count;
         while (count > 0) {
-            const incr = initialCount - count;
-            requests.push(this.web3.eth.getBlock(this.blockToPollNext + incr));
+            const incr = initialCount - count + 1n;
+            requests.push(this.web3.eth.getBlock(this.lastPolledBlock + incr));
             
             count--;
         }
@@ -71,20 +72,21 @@ export class ShortPollingService extends IBlocksPollingService implements OnAppl
         return Promise.all(requests);
     }
 
+    private schedulePoll() {
+        this.pollingTimeout = setTimeout(() => {
+            this.latestPoll = this.poll();
+        }, this.pollingIntervalTime);
+    }
+
     private async processBlocks(blocks: Block[]) {
         for (const block of blocks) {
             const blockNumber = BigInt(block.number);
-            this.blockToPollNext = blockNumber + 1n;
-            await this.prisma.block.update({
-                where: {
-                    type: BlockType.Latest,
-                },
-                data: {
-                    number: blockNumber,
-                },
-            });
-            this.queueClient.emit(QueuePatterns.NewBlock, { test: 123 });
-            this.logger.debug(`Processed block ${block.number}`);
+
+            const logs = await this.web3.eth.getPastLogs({ fromBlock: blockNumber, toBlock: blockNumber });
+            await this.dispatcher.dispatchLogs(logs);
+
+            await this.dispatcher.setBlockProcessed(blockNumber);
+            this.lastPolledBlock = blockNumber;
         }
     }
 }

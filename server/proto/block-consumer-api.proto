@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bcapi;
+
+service BalanceService {
+  rpc FindOne (BalanceByAddress) returns (Balance) {}
+}
+
+message BalanceByAddress {
+  string token = 1;
+  string account = 2;
+}
+
+message Balance {
+  float value = 1;
+}

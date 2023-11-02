@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "local:reset": "cd ./smartcontracts/ && npx hardhat run ./scripts/deploy.ts --network localhost",
+    "local:reset": "node ./scripts/reset.js",
     "rebuild:web": "docker-compose up -d --no-deps --build --force-recreate web",
     "rebuild:server": "docker-compose up -d --no-deps --build --force-recreate server"
   },

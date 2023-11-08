@@ -3,6 +3,8 @@ import { Controller, Get, Inject, OnModuleInit, Param } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
 import { BlockConsumerTag } from "./client-tag";
 import { GetBalanceDto } from "./dto/get-balance";
+import { catchError } from "rxjs";
+import { catchNotFound } from "@app/core/client/catch-not-found-error";
 
 @Controller('balance')
 export class BalanceController implements OnModuleInit {
@@ -21,10 +23,6 @@ export class BalanceController implements OnModuleInit {
     public async getBalance(
         @Param() param: GetBalanceDto,
     ) {
-        console.log(321);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log(123);
-        return;
-        return this.balanceService.findOne(param);
+        return this.balanceService.findOne(param).pipe(catchError(catchNotFound));
     }
 }

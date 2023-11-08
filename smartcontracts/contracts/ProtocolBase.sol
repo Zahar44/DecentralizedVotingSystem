@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import { IProtocol } from "./IProtocol.sol";
 import { ProtocolPermission } from "./ProtocolPermission.sol";
 
-abstract contract ProtocolBased is ProtocolPermission {
+abstract contract ProtocolBase is ProtocolPermission {
     IProtocol protocol;
 
     modifier checkPermissions(uint64 _permissions) {

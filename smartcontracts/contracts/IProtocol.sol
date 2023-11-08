@@ -3,7 +3,8 @@ pragma solidity 0.8.20;
 
 interface IProtocol {
     enum ContractTypes {
-        VotingToken
+        VotingToken,
+        VotingSystem
     }
 
     struct TypeAndAddress {

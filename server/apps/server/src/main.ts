@@ -1,13 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { LoggerMiddleware } from '@app/core/interceptor/logging-interceptor';
+import { LoggingInterceptor } from '@app/core/interceptor/logging-interceptor';
 
 declare const module: any;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-	app.useGlobalInterceptors(new LoggerMiddleware);
+	app.useGlobalInterceptors(new LoggingInterceptor);
 	await app.listen(3000);
 
 	if (module.hot) {

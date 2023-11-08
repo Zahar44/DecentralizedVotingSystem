@@ -2,13 +2,13 @@ import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } fr
 import { Observable, tap } from "rxjs";
 
 @Injectable()
-export class LoggerMiddleware implements NestInterceptor {
-    private readonly logger = new Logger(LoggerMiddleware.name);
+export class LoggingInterceptor implements NestInterceptor {
+    private readonly logger = new Logger(LoggingInterceptor.name);
 
     public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        
         const contextType = context.getType();
         let url = '';
+
         switch (contextType) {
             case 'http':
                 const http = context.switchToHttp();
@@ -21,9 +21,7 @@ export class LoggerMiddleware implements NestInterceptor {
                 break;
             case 'rpc':
                 const rpc = context.switchToRpc();
-                const rpcContext = rpc.getContext();
-                console.log(rpcContext);
-                url = '';
+                url = `rpc call ${Object.keys(rpc.getData()).join(', ')}`;
                 break;
             default:
                 break;

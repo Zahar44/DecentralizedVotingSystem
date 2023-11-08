@@ -2,10 +2,10 @@ import './App.css'
 import { Route, Routes } from "react-router-dom";
 import Login from './pages/login/Login';
 import NoPage from './pages/nopage/NoPage';
-import Layout from './pages/layout/Layout';
 import Admin from './pages/admin/Admin';
 import Require from './require';
 import Context from './context';
+import Project from './pages/project/Project';
 
 function App() {
     return (
@@ -16,7 +16,9 @@ function App() {
 
                 <Route element={<Require.Login/>}>
                     <Route element={<Context.Protocol/>}>
-                        <Route path='/' element={<Layout/>}/>
+                        <Route path='/project' element={<Project/>}/>
+                        <Route path='/project/new' element={<Project createNew={true}/>}/>
+                        <Route path='/project/pending' element={<Project createNew={true}/>}/>
 
                         <Route element={<Require.AnyPermissions/>}>
                             <Route path='/admin' element={<Admin/>}/>

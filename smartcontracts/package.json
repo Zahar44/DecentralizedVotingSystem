@@ -4,7 +4,8 @@
     "typechain": "^8.3.2"
   },
   "scripts": {
-    "local:deploy": "npx hardhat run ./scripts/deploy.ts --network localhost"
+    "local:deploy": "npx hardhat run ./scripts/deploy.ts --network localhost",
+    "local:reset": "npx hardhat run ./scripts/reset.ts --network localhost"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",

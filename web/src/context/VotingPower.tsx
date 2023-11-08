@@ -16,7 +16,7 @@ export const VotingPowerContext = createContext<VotingPowerContext>(defaultConte
 export function VotingPowerProvider({ children }: React.PropsWithChildren) {
     const { userAddress } = useContext(Web3Context);
     const { votingToken } = useContext(ProtocolContext);
-    let [power, setPower] = useState('0');
+    let [power, setPower] = useState('0.00');
 
     useEffect(() => {
         votingToken?.balanceOf(userAddress!).then((power) => {

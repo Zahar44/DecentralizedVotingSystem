@@ -1,9 +1,8 @@
+import { Navigate } from "react-router-dom";
 
 function NoPage() {
     return (
-        <>
-        NoPage
-        </>
+        <Navigate to='project'/>
     )
 }
 

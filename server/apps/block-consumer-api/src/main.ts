@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { BlockConsumerApi } from '@app/core/client';
+import { LoggingInterceptor } from '@app/core/interceptor/logging-interceptor';
 
 declare const module: any;
 
@@ -15,6 +16,7 @@ async function bootstrap() {
         },
     });
 
+    app.useGlobalInterceptors(new LoggingInterceptor);
     await app.listen();
 
 	if (module.hot) {

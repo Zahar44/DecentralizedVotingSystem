@@ -1,45 +1,49 @@
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const { logProcessed, stopLastProcessedMessage } = require('./utils');
+const { CmdTask, CmdTaskScheduler } = require('./utils');
 
 async function start() {
-    logProcessed('Deploying contracts');
-    let error = await stdExec('cd "smartcontracts" && npm run local:deploy');
+    const scheduler = new CmdTaskScheduler();
 
-    if (error) {
-        console.error(stderr);
-        return;
-    }
+    const deployContracts = new CmdTask(
+        'cd "smartcontracts" && npm run local:deploy',
+        'Deploying contracts',
+        'Contracts deployed!'
+    );
+    const resetLocalNetwork = new CmdTask(
+        'cd "smartcontracts" && npm run local:reset',
+        'Resetting local network',
+        'Local network reset!',
+        deployContracts
+    );
 
-    stopLastProcessedMessage('Contracts deployed!');
+    const pushBPDatabase = new CmdTask(
+        'cd "server" && npm run bp:db:push',
+        'Pushing changes to block polling database',
+        'Changes pushed to block polling database!'
+    );
+    const resetBPDatabase = new CmdTask(
+        'cd "server" && npm run bp:db:reset',
+        'Resetting block polling database',
+        'Database block polling reset!',
+        pushBPDatabase
+    );
 
-    logProcessed('Resetting block polling database');
-    error = await stdExec('cd "server" && npm run bp:db:reset');
+    const pushBCDatabase = new CmdTask(
+        'cd "server" && npm run bc:db:push',
+        'Pushing changes to block consumer database',
+        'Changes pushed to block consumer database!'
+    );
+    const resetBCDatabase = new CmdTask(
+        'cd "server" && npm run bc:db:reset',
+        'Resetting block consumer database',
+        'Database block consumer reset!',
+        pushBCDatabase
+    );
 
-    if (error) {
-        console.error(stderr);
-        return;
-    }
+    scheduler.addTask(resetLocalNetwork);
+    scheduler.addTask(resetBPDatabase);
+    scheduler.addTask(resetBCDatabase);
 
-    stopLastProcessedMessage('Database block polling seeded!');
-
-    logProcessed('Resetting block consumer database');
-    error = await stdExec('cd "server" && npm run bc:db:reset');
-
-    if (error) {
-        console.error(stderr);
-        return;
-    }
-
-    stopLastProcessedMessage('Database block consumer seeded!');
-}
-
-async function stdExec(command) {
-    let { stdout, stderr } = await exec(command);
-
-    if (stderr) {
-        return stderr;
-    }
+    await scheduler.start();
 }
 
 start();

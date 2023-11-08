@@ -13,6 +13,7 @@ function Voting() {
     return (
         <div>
             Voting
+            <button onClick={() => navigate('new')}>Create Project</button>
             { adminButton }
         </div>
     )

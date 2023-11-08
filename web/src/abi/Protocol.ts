@@ -1,18 +1,12 @@
 export const ProtocolABI = {
     getContractAddress: {
-        "inputs": [
-            {
-                "internalType": "enum Protocol.ContractTypes",
-                "name": "_type",
-                "type": "uint8"
-            }
-        ],
+        "inputs": [],
         "name": "getContractAddress",
         "outputs": [
             {
-                "internalType": "address",
+                "internalType": "address[]",
                 "name": "",
-                "type": "address"
+                "type": "address[]"
             }
         ],
         "stateMutability": "view",

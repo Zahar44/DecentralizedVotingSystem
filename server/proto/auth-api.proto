@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package authapi;
+
+service Auth {
+  rpc UpdateMessage (UpdateMessageRequest) returns(UpdateMessageResponse) {}
+  rpc RequestValidation (RequestValidationRequest) returns (RequestValidationResponse) {}
+  rpc Validate (ValidateRequest) returns (ValidateResponse) {}
+}
+
+message UpdateMessageRequest {
+  string value = 1;
+}
+
+message UpdateMessageResponse {}
+
+message RequestValidationRequest {
+  string address = 1;
+}
+
+message RequestValidationResponse {
+  string message = 1;
+}
+
+message ValidateRequest {
+  string address = 1;
+  string signarute = 2;
+}
+
+message ValidateResponse {
+  bool valid = 1;
+}

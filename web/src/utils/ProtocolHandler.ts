@@ -42,8 +42,8 @@ export class ProtocolHandler {
         return new ProtocolPermissions(+(res).toString());
     }
 
-    public async getContractAddress(index: number) {
-        const res = await this.api.getContractAddress(index);
-        return res as string;
+    public async getContractAddress() {
+        const res = await this.api.getContractAddress();
+        return res as string[];
     }
 }

@@ -18,8 +18,19 @@ contract Protocol is IProtocol, ProtocolPermission {
         permissionsByUser[msg.sender] = allPermissions;
     }
 
-    function getContractAddress(ContractTypes _type) external view returns(address) {
+    function getContractAddress(ContractTypes _type) public view returns(address) {
         return addressByType[_type];
+    }
+
+    function getContractAddress() external view returns(address[] memory) {
+        uint256 length = 2;
+        address[] memory arr = new address[](length);
+
+        for (uint256 i; i < length; i++) {
+            arr[i] = getContractAddress(ContractTypes(i));
+        }
+
+        return arr;
     }
 
     function getPermissions(address user) external view returns(uint32) {

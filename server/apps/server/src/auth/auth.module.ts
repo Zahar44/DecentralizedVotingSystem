@@ -1,20 +1,26 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
-import { ClientsModule, Transport } from "@nestjs/microservices";
-import { AuthTag } from "./client-tag";
+import { ClientsModule } from "@nestjs/microservices";
 import { AuthApi } from "@app/core/client";
 import { join } from "path";
+import { RpcErrorSerializer } from "@app/core/client/rpc-error-serializer";
+import { AuthTag } from "../tags";
 
 @Module({
     imports: [
-        ClientsModule.register([
+        ClientsModule.registerAsync([
             {
                 name: AuthTag,
-                transport: Transport.GRPC,
-                options: {
-                    package: AuthApi.protobufPackage,
-                    protoPath: join(__dirname, '../auth-api.proto'),
-                },
+                useFactory() {
+                    return {
+                        customClass: RpcErrorSerializer,
+                        options: {
+                            package: AuthApi.protobufPackage,
+                            protoPath: join(__dirname, '../auth-api.proto'),
+                            url: 'auth:' + process.env.AUTH_PORT,
+                        },
+                    }
+                }
             },
         ]),
     ],

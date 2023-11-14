@@ -19,13 +19,29 @@ export interface RequestValidationResponse {
   message: string;
 }
 
-export interface ValidateRequest {
+export interface LoginRequest {
   address: string;
-  signarute: string;
+  signature: string;
 }
 
-export interface ValidateResponse {
-  valid: boolean;
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
+export interface RefreshResponse {
+  accessToken: string;
+}
+
+export interface LogoutRequest {
+  token: string;
+}
+
+export interface LogoutResponse {
 }
 
 export const AUTHAPI_PACKAGE_NAME = "authapi";
@@ -35,7 +51,11 @@ export interface AuthClient {
 
   requestValidation(request: RequestValidationRequest): Observable<RequestValidationResponse>;
 
-  validate(request: ValidateRequest): Observable<ValidateResponse>;
+  login(request: LoginRequest): Observable<LoginResponse>;
+
+  refresh(request: RefreshRequest): Observable<RefreshResponse>;
+
+  logout(request: LogoutRequest): Observable<LogoutResponse>;
 }
 
 export interface AuthController {
@@ -47,12 +67,16 @@ export interface AuthController {
     request: RequestValidationRequest,
   ): Promise<RequestValidationResponse> | Observable<RequestValidationResponse> | RequestValidationResponse;
 
-  validate(request: ValidateRequest): Promise<ValidateResponse> | Observable<ValidateResponse> | ValidateResponse;
+  login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+
+  refresh(request: RefreshRequest): Promise<RefreshResponse> | Observable<RefreshResponse> | RefreshResponse;
+
+  logout(request: LogoutRequest): Promise<LogoutResponse> | Observable<LogoutResponse> | LogoutResponse;
 }
 
 export function AuthControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["updateMessage", "requestValidation", "validate"];
+    const grpcMethods: string[] = ["updateMessage", "requestValidation", "login", "refresh", "logout"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("Auth", method)(constructor.prototype[method], method, descriptor);

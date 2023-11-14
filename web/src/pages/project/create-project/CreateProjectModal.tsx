@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import SendTransactionModal from '../../common/SendTransactionModal';
 import { ProtocolContext } from '../../../context/Protocol';
 import CreateProjectModalInputs, { CreateProjectModalInputsState } from './CreateProjectModalInputs';
+import { CreateMetadataDto } from '@server/metadata/dto';
 
 ReactModal.setAppElement('#root');
 
@@ -39,7 +40,20 @@ function CreateProjectModal({ isOpen, onRequestClose }: CreateProjectModalProps)
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
-        setSendTransaction(true);
+        const body: CreateMetadataDto = {
+            name: inputs.name,
+            description: inputs.description,
+        };
+        protocol.authFetch?.(
+            'metadata',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body)
+            },
+        );
     }
 
     return (

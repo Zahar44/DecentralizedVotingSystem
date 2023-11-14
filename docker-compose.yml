@@ -1,30 +1,66 @@
 services:
+    # Blockchain
     blockchain-node:
         build: './smartcontracts'
         ports:
             - 8545:8545
         command: npx hardhat node
-    blocks-polling:
+
+    # Server
+    api-gateway:
         build: './server'
         image: server
-        ports:
-            - 3000:3000
         volumes:
             - ./server:/usr/src/app
             - /usr/src/app/node_modules/
-        depends_on:
-            - blockchain-node
-        command: npm run bp:dev
-    web:
-        build: './web'
+            - /usr/src/app/dist/
+        command:  npm run server:dev
         ports:
-            - 5173:5173
+            - 3000:3000
+    blocks-polling:
+        build: './server'
+        image: server
         volumes:
-            - ./web:/usr/src/app
+            - ./server:/usr/src/app
             - /usr/src/app/node_modules/
-        environment:
-            - CHOKIDAR_USEPOLLING=true
-        command: npm run dev
+            - /usr/src/app/dist/
+        command:  >
+            sh -c "npm run bp:db:generate &&
+                npm run bp:dev"
+    blocks-consumer:
+        build: './server'
+        image: server
+        volumes:
+            - ./server:/usr/src/app
+            - /usr/src/app/node_modules/
+            - /usr/src/app/dist/
+        command: >
+            sh -c "npm run bc:db:generate &&
+                npm run bc:dev"
+    blocks-consumer-api:
+        build: './server'
+        image: server
+        volumes:
+            - ./server:/usr/src/app
+            - /usr/src/app/node_modules/
+            - /usr/src/app/dist/
+        command: >
+            sh -c "npm run bc:db:generate &&
+                npm run bcapi:dev"
+        ports:
+            - 3012:3012
+    auth:
+        build: './server'
+        image: server
+        volumes:
+            - ./server:/usr/src/app
+            - /usr/src/app/node_modules/
+            - /usr/src/app/dist/
+        command: npm run auth:dev
+        ports:
+            - 3011:3011
+
+    # Server Dependencies
     database:
         image: 'postgres:latest'
         ports:
@@ -41,3 +77,16 @@ services:
         ports:
             - 5672:5672
             - 15672:15672
+
+    # Client
+    web:
+        build: './web'
+        image: web
+        ports:
+            - 5173:5173
+        volumes:
+            - ./web:/usr/src/app
+            - /usr/src/app/node_modules/
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        command: npm run dev

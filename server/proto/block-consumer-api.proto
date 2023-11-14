@@ -2,8 +2,12 @@ syntax = "proto3";
 
 package bcapi;
 
-service BalanceService {
-  rpc FindOne (BalanceByAddress) returns (Balance) {}
+service BalanceERC20 {
+  rpc FindOne (BalanceByAddress) returns (BalanceERC20Response) {}
+}
+
+service BalanceERC721 {
+  rpc FindOne (BalanceByAddress) returns (BalanceERC721Response) {}
 }
 
 message BalanceByAddress {
@@ -11,6 +15,10 @@ message BalanceByAddress {
   string account = 2;
 }
 
-message Balance {
+message BalanceERC20Response {
   float value = 1;
+}
+
+message BalanceERC721Response {
+  repeated float values = 1;
 }

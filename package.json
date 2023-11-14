@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "local:reset": "node ./scripts/reset.js",
-    "rebuild:web": "docker-compose up -d --no-deps --build --force-recreate web",
-    "rebuild:server": "docker-compose up -d --no-deps --build --force-recreate server"
+    "local:reset": "node ./scripts/reset.js"
   },
   "keywords": [],
   "author": "",

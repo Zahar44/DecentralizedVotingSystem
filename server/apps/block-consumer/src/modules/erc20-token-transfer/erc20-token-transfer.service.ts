@@ -4,10 +4,10 @@ import { PrismaService } from "../prisma/prisma.service";
 import { decodeParameter } from 'web3-eth-abi';
 import { ERC20TokenService } from "../erc20-token/erc20-token.service";
 import { fromUnit } from "@app/core/web3";
-import { Token } from "apps/block-consumer/prisma/client";
+import { TokenERC20 } from "apps/block-consumer/prisma/client";
 
 @Injectable()
-export class TokenTransferService {
+export class ERC20TokenTransferService {
     constructor(
         private readonly tokenService: ERC20TokenService,
         private readonly prisma: PrismaService,
@@ -27,11 +27,11 @@ export class TokenTransferService {
     }
 
     private async addBalance(
-        token: Token,
+        token: TokenERC20,
         accountAddress: string,
         amountEtherToAdd: number,
     ) {
-        const balancesCount = await this.prisma.balance.count({
+        const balancesCount = await this.prisma.balanceERC20.count({
             where: {
                 account: {
                     address: accountAddress,
@@ -59,7 +59,7 @@ export class TokenTransferService {
             update: {},
         });
 
-        await this.prisma.balance.upsert({
+        await this.prisma.balanceERC20.upsert({
             create: {
                 account: {
                     connect: {

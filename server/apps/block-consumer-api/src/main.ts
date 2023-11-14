@@ -13,6 +13,7 @@ async function bootstrap() {
         options: {
             package: BlockConsumerApi.protobufPackage,
             protoPath: join(__dirname, '../block-consumer-api.proto'),
+            url: 'blocks-consumer-api:' + process.env.BLOCK_CONSUMER_PORT,
         },
     });
 

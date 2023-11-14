@@ -15,24 +15,44 @@ model Account {
   id Int @id @default(autoincrement())
   address String @unique @db.VarChar(42)
 
-  balances Balance[]
+  erc20Balances BalanceERC20[]
+  erc721Balances BalanceERC721[]
 }
 
-model Balance {
+
+model TokenERC20 {
+  id Int @id @default(autoincrement())
+  address String @unique @db.VarChar(42)
+  decimals Int
+
+  balances BalanceERC20[]
+}
+
+model BalanceERC20 {
   tokenId Int
   accountId Int
   value Float
 
   account Account @relation(fields: [accountId], references: [id])
-  token Token @relation(fields: [tokenId], references: [id])
+  token TokenERC20 @relation(fields: [tokenId], references: [id])
 
   @@id([tokenId, accountId])
 }
 
-model Token {
+model TokenERC721 {
   id Int @id @default(autoincrement())
   address String @unique @db.VarChar(42)
-  decimals Int
 
-  balances Balance[]
+  balances BalanceERC721[]
+}
+
+model BalanceERC721 {
+  tokenId Int
+  accountId Int
+  values Int[]
+
+  account Account @relation(fields: [accountId], references: [id])
+  token TokenERC721 @relation(fields: [tokenId], references: [id])
+
+  @@id([tokenId, accountId])
 }

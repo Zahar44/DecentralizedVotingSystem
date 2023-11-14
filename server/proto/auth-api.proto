@@ -5,7 +5,10 @@ package authapi;
 service Auth {
   rpc UpdateMessage (UpdateMessageRequest) returns(UpdateMessageResponse) {}
   rpc RequestValidation (RequestValidationRequest) returns (RequestValidationResponse) {}
-  rpc Validate (ValidateRequest) returns (ValidateResponse) {}
+
+  rpc Login (LoginRequest) returns (LoginResponse) {}
+  rpc Refresh (RefreshRequest) returns (RefreshResponse) {}
+  rpc Logout (LogoutRequest) returns (LogoutResponse) {}
 }
 
 message UpdateMessageRequest {
@@ -22,11 +25,28 @@ message RequestValidationResponse {
   string message = 1;
 }
 
-message ValidateRequest {
+message LoginRequest {
   string address = 1;
-  string signarute = 2;
+  string signature = 2;
 }
 
-message ValidateResponse {
-  bool valid = 1;
+message LoginResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message RefreshRequest {
+  string refreshToken = 1;
+}
+
+message RefreshResponse {
+  string accessToken = 1;
+}
+
+message LogoutRequest {
+  string token = 1;
+}
+
+message LogoutResponse {
+
 }

@@ -6,23 +6,25 @@ import { QueueTypes } from '@app/core/queue/queue-types';
 declare const module: any;
 
 async function bootstrap() {
-    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    const app = await NestFactory.create(AppModule);
+
+    app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
         options: {
-                urls: ['amqp://localhost:5672'],
-                queue: QueueTypes.Block,
-                queueOptions: {
-                    durable: false
+            urls: ['amqp://rabbitmq:5672'],
+            queue: QueueTypes.Block,
+            queueOptions: {
+                durable: false
             },
         },
     });
 
-    await app.listen();
-    
-	if (module.hot) {
-		module.hot.accept();
-		module.hot.dispose(() => app.close());
-	}
+    await app.startAllMicroservices();
+
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => app.close());
+    }
 }
 
 bootstrap();

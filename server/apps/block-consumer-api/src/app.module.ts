@@ -1,10 +1,17 @@
 import { Module } from "@nestjs/common";
-import { BalanceModule } from "./balance/balance.module";
+import { BalanceERC20Module } from "./balance-erc20/balance-erc20.module";
 import { PrismaModule } from "apps/block-consumer/src/modules/prisma/prisma.module";
+import { BalanceERC721Module } from "./balance-erc721/balance.erc721.module";
+import { ConfigModule } from "@nestjs/config";
+import { join } from "path";
 
 @Module({
     imports: [
-        BalanceModule,
+        ConfigModule.forRoot({
+            envFilePath: join(process.cwd(), '.env'),
+        }),
+        BalanceERC20Module,
+        BalanceERC721Module,
         {
             global: true,
             module: PrismaModule,

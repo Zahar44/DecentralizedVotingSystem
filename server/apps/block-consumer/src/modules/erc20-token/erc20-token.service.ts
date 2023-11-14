@@ -30,7 +30,7 @@ export class ERC20TokenService {
 
         const [decimals] = await web3CallPromise;
 
-        return this.prisma.token.create({
+        return this.prisma.tokenERC20.create({
             data: {
                 address,
                 decimals: +decimals.toString(),
@@ -39,7 +39,7 @@ export class ERC20TokenService {
     }
 
     public async getOrCreateToken(address: string) {
-        const token = await this.prisma.token.findUnique({
+        const token = await this.prisma.tokenERC20.findUnique({
             where: {
                 address: address,
             },

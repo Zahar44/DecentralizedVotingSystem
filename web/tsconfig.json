@@ -5,6 +5,14 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "paths": {
+      "@server": [
+        "../server/apps/server/src"
+      ],
+      "@server/*": [
+        "../server/apps/server/src/*"
+      ],
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -18,8 +26,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src"],
+  "include": ["src", "../server/apps/server/src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

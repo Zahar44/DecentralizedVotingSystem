@@ -12,6 +12,7 @@
   "dependencies": {
     "@metamask/sdk-react": "^0.10.1",
     "ethers": "^6.8.0",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",

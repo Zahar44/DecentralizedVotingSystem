@@ -12,6 +12,7 @@ async function bootstrap() {
         options: {
             package: AuthApi.protobufPackage,
             protoPath: join(__dirname, '../auth-api.proto'),
+            url: 'auth:3011',
         },
     });
     await app.listen();

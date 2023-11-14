@@ -18,13 +18,9 @@ module.exports = function (options, webpack) {
             }),
             new RunScriptWebpackPlugin({ name: options.output.filename, autoRestart: false }),
         ],
-        devServer: {
-            port: 3000,
-            host: '0.0.0.0',
-            watchOptions: {
-                aggregateTimeout: 500,
-                poll: 1000
-            }
+        watchOptions: {
+            poll: 1000,
+            aggregateTimeout: 300,
         }
     };
 };

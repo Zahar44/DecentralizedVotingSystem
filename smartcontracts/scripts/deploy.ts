@@ -18,7 +18,7 @@ async function main() {
         contractAddress: votingToken.target,
     });
 
-    const votingSystem = await ethers.deployContract('VotingSystem', ["Voting", "Voting", 'localhost:3000/', protocolContractDeployTx.target]);
+    const votingSystem = await ethers.deployContract('VotingSystem', ["Voting", "Voting", 'http://localhost:3000/metadata/', protocolContractDeployTx.target]);
     await votingSystem.waitForDeployment();
 
     protocolContractArgs.push({

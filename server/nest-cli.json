@@ -5,11 +5,7 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/server/tsconfig.app.json",
-    "assets": [
-      "**/*.proto"
-    ],
-    "watchAssets": true
+    "tsConfigPath": "apps/server/tsconfig.app.json"
   },
   "monorepo": true,
   "root": "apps/server",
@@ -30,8 +26,8 @@
     "block-polling": {
       "type": "application",
       "root": "apps/block-polling",
-      "entryFile": "main",
-      "sourceRoot": "apps/block-polling/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/block-polling/tsconfig.app.json"
       }
@@ -48,8 +44,8 @@
     "block-consumer": {
       "type": "application",
       "root": "apps/block-consumer",
-      "entryFile": "main",
-      "sourceRoot": "apps/block-consumer/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/block-consumer/tsconfig.app.json"
       }
@@ -74,6 +70,19 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json",
+        "assets": [
+          "proto/*.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "metadata": {
+      "type": "application",
+      "root": "apps/metadata",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/metadata/tsconfig.app.json",
         "assets": [
           "proto/*.proto"
         ],

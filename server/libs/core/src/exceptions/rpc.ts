@@ -6,6 +6,7 @@ export const RpcExceptionMessages = {
     },
     401: {
         SignatureIsNotCorrect: 'Signature is not correct',
+        NotAnOwner: 'Not an owner',
     },
     404: {
         NotFound: 'Not Found',

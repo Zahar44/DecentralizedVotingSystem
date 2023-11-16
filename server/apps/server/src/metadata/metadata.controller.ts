@@ -1,34 +1,46 @@
 import { AuthGuard } from "@app/core/auth/guard";
-import { Body, Controller, Inject, OnModuleInit, Post, Req, UseGuards } from "@nestjs/common";
-import { CreateMetadataDto } from "./dto";
+import { Body, Controller, Get, Inject, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { CreateMetadataDto, GetMetadata } from "./dto";
 import { AuthRequest } from "@app/core/auth";
-import { BlockConsumerTag } from "../tags";
+import { MetadataApi } from "@app/core/client";
 import { ClientGrpc } from "@nestjs/microservices";
-import { BlockConsumerApi } from "@app/core/client";
-import { firstValueFrom } from "rxjs";
+import { MetadataTag } from "../tags";
 
 @Controller('metadata')
-export class MetadataController implements OnModuleInit {
-    private api: BlockConsumerApi.BalanceERC721Client;
+export class MetadataController {
+    private api: MetadataApi.MetadataClient;
 
     constructor(
-        @Inject(BlockConsumerTag) private readonly client: ClientGrpc,
+        @Inject(MetadataTag) private readonly client: ClientGrpc,
     ) {}
-
+    
     public onModuleInit() {
-        this.api = this.client.getService(BlockConsumerApi.BALANCE_ER_C721_SERVICE_NAME);
+        this.api = this.client.getService(MetadataApi.METADATA_SERVICE_NAME);
     }
 
     @Post()
     @UseGuards(AuthGuard)
-    public async createMetadata(
+    public createMetadata(
         @Body() dto: CreateMetadataDto,
         @Req() req: AuthRequest,
     ) {
-        const res = await firstValueFrom(this.api.findOne({
-            account: req.user.address,
+        return this.api.create({
+            tokenId: dto.tokenId,
             token: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
-        }));
-        console.log(res.values);
+            account: req.user.address,
+            name: dto.name,
+            description: dto.description,
+            image: Buffer.from(dto.image, 'base64'),
+        });
+    }
+
+    @Get('/:id')
+    public getMetadata(
+        @Param() dto: GetMetadata,
+    ) {
+        return this.api.findOne({
+            token: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
+            tokenId: dto.tokenId,
+        });
     }
 }

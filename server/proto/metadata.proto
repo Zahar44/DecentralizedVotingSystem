@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package metadata;
+
+service Metadata {
+    rpc Create(CreateRequest) returns (CreateResponse) {}
+    rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
+}
+
+message CreateRequest {
+    string token = 1;
+    int32 tokenId = 2;
+    string account = 3;
+    string name = 4;
+    string description = 5;
+    bytes image = 6;
+}
+message CreateResponse {}
+
+message FindOneRequest {
+    string token = 1;
+    int32 tokenId = 2;
+}
+
+message FindOneResponse {
+    string title = 1;
+    string type = 2;
+}

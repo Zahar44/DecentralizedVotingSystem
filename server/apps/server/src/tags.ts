@@ -1,2 +1,2 @@
 export const AuthTag = 'AuthTag';
-export const BlockConsumerTag = 'BlockConsumerTag';
+export const MetadataTag = 'MetadataTag';

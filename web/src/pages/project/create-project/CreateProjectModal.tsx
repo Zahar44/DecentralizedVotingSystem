@@ -38,22 +38,42 @@ function CreateProjectModal({ isOpen, onRequestClose }: CreateProjectModalProps)
         return protocol.votingSystem!.createProject();
     }
 
-    const handleSubmit = (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        const body: CreateMetadataDto = {
-            name: inputs.name,
-            description: inputs.description,
-        };
-        protocol.authFetch?.(
-            'metadata',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+        if (!protocol.votingSystem) return;
+        const tokenId = await protocol.votingSystem.getTotalSupply();
+        const resp = await protocol.votingSystem.createProject();
+
+        resp?.onConfirmed(() => {
+            const body: CreateMetadataDto = {
+                name: inputs.name,
+                description: inputs.description,
+                tokenId,
+                image: inputs.image,
+            };
+            protocol.authFetch?.(
+                'metadata',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body)
                 },
-                body: JSON.stringify(body)
-            },
-        );
+                3,
+            ).then(() => {
+                window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                      type: 'ERC721', // or 'ERC1155'
+                      options: {
+                        address: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0', // The address of the token.
+                        tokenId: tokenId.toString(), // ERC-721 or ERC-1155 token ID.
+                      },
+                    },
+                  });
+            });
+        });
     }
 
     return (

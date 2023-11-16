@@ -10,7 +10,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
                 name: QueueClient,
                 transport: Transport.RMQ,
                 options: {
-                    urls: ['amqp://localhost:5672'],
+                    urls: ['amqp://host.docker.internal:5672'],
                     queue: QueueTypes.Block,
                     queueOptions: {
                         durable: false

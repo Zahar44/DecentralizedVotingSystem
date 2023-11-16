@@ -19,4 +19,9 @@ export class VotingSystemHandler {
             return new ContractResponseHandler(false, this.runner.provider!);
         }
     }
+
+    public async getTotalSupply() {
+        const res = await this.api?.totalSupply() as bigint;
+        return +res.toString();
+    }
 }

@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TokenERC721 {
+  id Int @id @default(autoincrement())
+  address String @unique @db.VarChar(42)
+
+  metadata Metadata[]
+}
+
+model Metadata {
+  id Int @id @default(autoincrement())
+  collectionId Int
+  tokenId Int
+  
+  title String @db.VarChar(255)
+  type String @db.VarChar(255)
+  image Bytes
+
+  collection TokenERC721 @relation(fields: [collectionId], references: [id])
+}
+
+// {
+//     "title": "Asset Metadata",
+//     "type": "object",
+//     "properties": {
+//         "name": {
+//             "type": "string",
+//             "description": "Identifies the asset to which this NFT represents"
+//         },
+//         "description": {
+//             "type": "string",
+//             "description": "Describes the asset to which this NFT represents"
+//         },
+//         "image": {
+//             "type": "string",
+//             "description": "A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+//         }
+//     }
+// }

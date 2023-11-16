@@ -11,7 +11,7 @@ interface ProtocolContext {
     votingSystem?: VotingSystemHandler;
     protocolHandler?: ProtocolHandler;
     permissions?: ProtocolPermissions;
-    authFetch?: (api: string, init?: RequestInit) => Promise<Response>;
+    authFetch?: (api: string, init?: RequestInit, retryCount?: number) => Promise<Response>;
 }
 
 export const ProtocolContext = createContext<ProtocolContext>({});
@@ -30,9 +30,10 @@ export function ProtocolProvider() {
             signer,
         ),
         permissions,
-        authFetch: async (api, init) => {
+        authFetch: async (api, init, retryCount) => {
             if (!init) init = {};
             if (!init.headers) init.headers = {};
+            if (!retryCount) retryCount = 1;
             setCorsHeaders(init.headers);
             const token = await getValidAccessToken(userAddress!, signer);
             init.headers = {
@@ -40,7 +41,13 @@ export function ProtocolProvider() {
                 'Authorization': `Bearer ${token}`,
             }
 
-            return fetch(import.meta.env.VITE_API_URL + api, init);
+            let resp: Response = await fetch(import.meta.env.VITE_API_URL + api, init);
+            while (--retryCount > 0) {
+                if (resp.ok) return resp;
+                await new Promise((resolve) => setTimeout(resolve, 500));
+                resp = await fetch(import.meta.env.VITE_API_URL + api, init);
+            }
+            return resp;
         }
     };
 

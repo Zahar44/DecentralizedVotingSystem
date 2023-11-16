@@ -1,4 +1,4 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateMetadataDto {
     @IsString()
@@ -8,4 +8,8 @@ export class CreateMetadataDto {
     @IsString()
     @MaxLength(500)
     description: string;
+    @IsNumber()
+    tokenId: number;
+    @IsString()
+    image: string;
 }

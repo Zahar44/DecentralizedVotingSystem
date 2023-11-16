@@ -52,6 +52,7 @@ export class ContractResponseHandler {
     private async isTransactionConfirmed() {
         if (this.response === false) return false;
         const receipt = await this.provider.getTransactionReceipt(this.response.hash);
+        await receipt?.confirmations();
         return !!receipt;
     }
 }

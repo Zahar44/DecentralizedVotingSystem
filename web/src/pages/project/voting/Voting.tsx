@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { ProtocolContext } from "../../../context/Protocol";
 import { useNavigate } from "react-router-dom";
+import VotingList from "./VotingList";
 
 function Voting() {
     const { permissions } = useContext(ProtocolContext);
@@ -15,6 +16,7 @@ function Voting() {
             Voting
             <button onClick={() => navigate('new')}>Create Project</button>
             { adminButton }
+            { <VotingList/> }
         </div>
     )
 }

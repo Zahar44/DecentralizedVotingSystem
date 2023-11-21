@@ -1,8 +1,0 @@
-.send-transaction-modal {
-    width: 50%;
-    height: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    transform: translate(50%, 50%);
-    border-radius: 100px;
-}

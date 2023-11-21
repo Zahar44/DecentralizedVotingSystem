@@ -53,11 +53,29 @@ export class MetadataController implements MetadataApi.MetadataController, OnMod
         return {};
     }
 
+
+    public async findAll(
+        request: MetadataApi.FindAllRequest
+    ): Promise<MetadataApi.FindAllResponse> {
+        const res = await this.prisma.metadata.findMany({
+            select: {
+                tokenId: true,
+                title: true,
+                type: true,
+            },
+        });
+
+        return {
+            data: res,
+        };
+    }
+
     public async findOne(
         request: MetadataApi.FindOneRequest,
     ): Promise<MetadataApi.FindOneResponse> {
         const res = await this.prisma.metadata.findFirst({
             select: {
+                tokenId: true,
                 title: true,
                 type: true,
             },

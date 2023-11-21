@@ -8,7 +8,7 @@ interface CreateProjectModalInputsProps {
 export interface CreateProjectModalInputsState {
     name: string;
     description: string;
-    image: string;
+    image?: File;
 }
 
 const allowedTypes = ['image/png', 'image/jpg'];
@@ -16,7 +16,7 @@ const allowedTypes = ['image/png', 'image/jpg'];
 function CreateProjectModalInputs({ state, setState }: CreateProjectModalInputsProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleStateChange = (key: keyof CreateProjectModalInputsState, value: string | null) => {
+    const handleStateChange = (key: keyof CreateProjectModalInputsState, value: string | null | File) => {
         const updatedState = { ...state, [key]: value };
         setState(updatedState);
     }
@@ -25,16 +25,18 @@ function CreateProjectModalInputs({ state, setState }: CreateProjectModalInputsP
         if (!file || !allowedTypes.some((t) => t === file.type)) {
             return;
         }
+        handleStateChange('image', file);
+        return;
 
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-            if (typeof reader.result === 'string')
-                handleStateChange('image', reader.result);
-        });
-        reader.readAsDataURL(file);
+        // const reader = new FileReader();
+        // reader.addEventListener("load", () => {
+        //     if (typeof reader.result === 'string')
+        //         handleStateChange('image', reader.result);
+        // });
+        // reader.readAsDataURL(file);
     }
 
-    const uploadedImageHtml = state.image ? <img src={state.image}/> : <img src='/empty.jpg'/>;
+    const uploadedImageHtml = state.image ? <img src={state.image.webkitRelativePath}/> : <img src='/empty.jpg'/>;
 
     return (
         <>

@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 
+export type TransactionStatus = 'failed' | 'success' | 'timeout';
+
 export class ContractResponseHandler {
     private response: ethers.ContractTransactionResponse | false;
     private provider: ethers.Provider;
@@ -20,33 +22,19 @@ export class ContractResponseHandler {
         this.provider = provider;
     }
 
-    public onConfirmed(onConfirmed: (status: 'failed' | 'success') => void, onTimeout?: () => void) {
+    public async waitConfirm(): Promise<TransactionStatus> {
         if (this.response === false) {
-            onConfirmed('failed');
-            return;
+            return 'failed';
         }
 
-        // just in case using setTimeout
-        // if something failed then it wont do same thing forever like setInterval
-        let check: () => Promise<void>;
         let tries = 0;
-
-        check = async () => {
+        while(tries++ < this.pollingTriesTillCancel) {
             const confirmed = await this.isTransactionConfirmed();
-            if (confirmed) {
-                onConfirmed('success');
-                return;
-            }
-
-            if (tries++ >= this.pollingTriesTillCancel) {
-                if (onTimeout) onTimeout();
-                return;
-            }
-
-            setTimeout(check, this.pollingInterval);
+            if (confirmed) return 'success';
+            await new Promise((resolve) => setTimeout(resolve, this.pollingInterval));
         }
 
-        check();
+        return 'timeout';
     }
 
     private async isTransactionConfirmed() {

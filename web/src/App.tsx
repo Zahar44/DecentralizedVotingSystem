@@ -6,6 +6,12 @@ import Admin from './pages/admin/Admin';
 import Require from './require';
 import Context from './context';
 import Project from './pages/project/Project';
+import { MetaMaskInpageProvider } from "@metamask/providers";
+declare global {
+    interface Window {
+        ethereum: MetaMaskInpageProvider;
+    }
+}
 
 function App() {
     return (

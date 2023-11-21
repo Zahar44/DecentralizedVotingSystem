@@ -1,8 +1,21 @@
-import { Transform } from "class-transformer";
-import { IsEthereumAddress, IsNumber } from "class-validator";
-import Web3 from "web3";
+import { Type } from "class-transformer";
+import { IsNumber } from "class-validator";
 
-export class GetMetadata {
+export class GetMetadataRequestDto {
     @IsNumber()
+    @Type(() => Number)
     tokenId: number;
+}
+
+export interface GetMetadataResponseDto {
+    name?: string;
+    description?: string;
+    image?: string;
+    attributes?: MetadataAttribute[];
+}
+
+export interface MetadataAttribute {
+    trait_type?: string;
+    value?: string;
+    display_type?: string;
 }

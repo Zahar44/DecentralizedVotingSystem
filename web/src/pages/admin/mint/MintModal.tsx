@@ -26,7 +26,8 @@ function MintModal({ isOpen, onRequestClose }: MintModalProps) {
     const handleMint = async () => {
         try {
             const resp = await votingToken?.mint(userAddress!, ethers.parseEther(mintValue.toString()));
-            resp?.onConfirmed(onRequestClose);
+            await resp?.waitConfirm();
+            onRequestClose();
         } catch(error) {
             console.error('handleMint: ' + error);
             onRequestClose();

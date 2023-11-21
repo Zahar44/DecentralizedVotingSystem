@@ -44,7 +44,7 @@ export class ShortPollingService extends IBlocksPollingService implements OnAppl
     }
 
     private async poll() {
-        await this.latestPoll;
+        await this.latestPoll?.catch((error) => this.logger.error(`Poll error ${error}`));
         const latestBlockNumber = await this.web3.eth.getBlockNumber();
 
         if (latestBlockNumber <= this.lastPolledBlock) {

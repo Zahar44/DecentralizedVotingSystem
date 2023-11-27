@@ -39,9 +39,22 @@ async function start() {
         pushBCDatabase
     );
 
+    const pushMetadataDatabase = new CmdTask(
+        'cd "server" && npm run metadata:db:push',
+        'Pushing changes to metadata database',
+        'Changes pushed to metadata database!'
+    );
+    const resetMetadataDatabase = new CmdTask(
+        'cd "server" && npm run metadata:db:reset',
+        'Resetting metadata database',
+        'Database metadata reset!',
+        pushMetadataDatabase
+    );
+
     scheduler.addTask(resetLocalNetwork);
     scheduler.addTask(resetBPDatabase);
     scheduler.addTask(resetBCDatabase);
+    scheduler.addTask(resetMetadataDatabase);
 
     await scheduler.start();
 }

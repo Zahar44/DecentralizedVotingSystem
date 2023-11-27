@@ -4,6 +4,7 @@ package metadata;
 
 service Metadata {
     rpc Create(CreateRequest) returns (CreateResponse) {}
+    rpc SetImage(SetImageRequest) returns (SetImageResponse) {}
     rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
     rpc FindAll(FindAllRequest) returns (FindAllResponse) {}
 }
@@ -14,9 +15,16 @@ message CreateRequest {
     string account = 3;
     string name = 4;
     string description = 5;
-    bytes image = 6;
 }
 message CreateResponse {}
+
+message SetImageRequest {
+    string token = 1;
+    int32 tokenId = 2;
+    string account = 3;
+    bytes image = 4;
+}
+message SetImageResponse {}
 
 message FindOneRequest {
     string token = 1;
@@ -25,8 +33,8 @@ message FindOneRequest {
 
 message FindOneResponse {
     int32 tokenId = 1;
-    string title = 2;
-    string type = 3;
+    string name = 2;
+    string description = 3;
 }
 
 message FindAllRequest {}

@@ -12,20 +12,32 @@ datasource db {
 }
 
 model TokenERC721 {
-  id Int @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   address String @unique @db.VarChar(42)
 
   metadata Metadata[]
 }
 
 model Metadata {
-  id Int @id @default(autoincrement())
+  id           Int @id @default(autoincrement())
   collectionId Int
-  tokenId Int
-  
-  title String @db.VarChar(255)
-  type String @db.VarChar(255)
-  image Bytes
+  tokenId      Int
+
+  name        String @db.VarChar(255)
+  description String @db.VarChar(255)
+
+  image MetadataImage?
 
   collection TokenERC721 @relation(fields: [collectionId], references: [id])
+
+  @@unique([collectionId, tokenId])
+}
+
+model MetadataImage {
+  id         Int @id @default(autoincrement())
+  metadataId Int @unique
+
+  metadata Metadata @relation(fields: [metadataId], references: [id])
+
+  data Bytes @db.ByteA()
 }

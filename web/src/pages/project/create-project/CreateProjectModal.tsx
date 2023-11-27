@@ -37,11 +37,16 @@ function CreateProjectModal({ isOpen, onRequestClose }: CreateProjectModalProps)
 
         if (!protocol.votingSystem) return;
         const tokenId = await protocol.votingSystem.getTotalSupply();
-        const resp = await protocol.votingSystem.createProject();
+        const resp = await protocol.votingSystem.createProject({
+            name: inputs.name,
+            description: inputs.description,
+            treasury: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
+            price: '123',
+        });
         await resp?.waitConfirm();
 
+        return;
         if (!inputs.image) return;
-        console.log(tokenId);
         
         const formData = new FormData();
         formData.append('name', inputs.name);
@@ -61,8 +66,8 @@ function CreateProjectModal({ isOpen, onRequestClose }: CreateProjectModalProps)
             params: {
                 type: 'ERC721',
                 options: {
-                address: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
-                tokenId: tokenId.toString(),
+                    address: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
+                    tokenId: tokenId.toString(),
                 },
             },
         });
@@ -83,8 +88,8 @@ function CreateProjectModal({ isOpen, onRequestClose }: CreateProjectModalProps)
                 <div className='create-project-modal-content'>
                     <form onSubmit={handleSubmit}>
                         <CreateProjectModalInputs state={inputs} setState={setInputsAndUpdateUrl}/>
-                        <div>
-                            <input type='submit'/>
+                        <div className='create-project-modal-box'>
+                            <input type='submit' value='Submit'/>
                         </div>
                     </form>
                 </div>

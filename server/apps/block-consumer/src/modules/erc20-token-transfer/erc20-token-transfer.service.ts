@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import Web3, { Log } from "web3";
 import { PrismaService } from "../prisma/prisma.service";
 import { decodeParameter } from 'web3-eth-abi';
@@ -8,6 +8,8 @@ import { TokenERC20 } from "apps/block-consumer/prisma/client";
 
 @Injectable()
 export class ERC20TokenTransferService {
+    private readonly logger = new Logger(ERC20TokenTransferService.name);
+
     constructor(
         private readonly tokenService: ERC20TokenService,
         private readonly prisma: PrismaService,
@@ -19,6 +21,7 @@ export class ERC20TokenTransferService {
         const from      = decodeParameter('address', log.topics[1].toString()) as string;
         const to        = decodeParameter('address', log.topics[2].toString()) as string;
         const amount    = decodeParameter('uint256', log.data.toString()) as bigint;
+        this.logger.debug(`${amount}: ${from} => ${to}`);
 
         const token = await this.tokenService.getOrCreateToken(log.address!);
         const amountEther = fromUnit(amount, token.decimals);

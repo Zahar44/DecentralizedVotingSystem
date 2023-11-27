@@ -10,10 +10,19 @@ export interface CreateRequest {
   account: string;
   name: string;
   description: string;
-  image: Uint8Array;
 }
 
 export interface CreateResponse {
+}
+
+export interface SetImageRequest {
+  token: string;
+  tokenId: number;
+  account: string;
+  image: Uint8Array;
+}
+
+export interface SetImageResponse {
 }
 
 export interface FindOneRequest {
@@ -23,8 +32,8 @@ export interface FindOneRequest {
 
 export interface FindOneResponse {
   tokenId: number;
-  title: string;
-  type: string;
+  name: string;
+  description: string;
 }
 
 export interface FindAllRequest {
@@ -48,6 +57,8 @@ export const METADATA_PACKAGE_NAME = "metadata";
 export interface MetadataClient {
   create(request: CreateRequest): Observable<CreateResponse>;
 
+  setImage(request: SetImageRequest): Observable<SetImageResponse>;
+
   findOne(request: FindOneRequest): Observable<FindOneResponse>;
 
   findAll(request: FindAllRequest): Observable<FindAllResponse>;
@@ -56,6 +67,8 @@ export interface MetadataClient {
 export interface MetadataController {
   create(request: CreateRequest): Promise<CreateResponse> | Observable<CreateResponse> | CreateResponse;
 
+  setImage(request: SetImageRequest): Promise<SetImageResponse> | Observable<SetImageResponse> | SetImageResponse;
+
   findOne(request: FindOneRequest): Promise<FindOneResponse> | Observable<FindOneResponse> | FindOneResponse;
 
   findAll(request: FindAllRequest): Promise<FindAllResponse> | Observable<FindAllResponse> | FindAllResponse;
@@ -63,7 +76,7 @@ export interface MetadataController {
 
 export function MetadataControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["create", "findOne", "findAll"];
+    const grpcMethods: string[] = ["create", "setImage", "findOne", "findAll"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("Metadata", method)(constructor.prototype[method], method, descriptor);

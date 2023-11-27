@@ -1,6 +1,19 @@
-export const VotingSystemABI = {
-    createVoting: {
+export const VotingSystemEvents = {
+    votingCreated: {
+        "anonymous": false,
         "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "issuer",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "projectId",
+                "type": "uint256"
+            },
             {
                 "components": [
                     {
@@ -24,45 +37,38 @@ export const VotingSystemABI = {
                         "type": "address"
                     }
                 ],
+                "indexed": false,
                 "internalType": "struct IVotingSystem.CreateVotingProps",
                 "name": "props",
                 "type": "tuple"
             }
         ],
-        "name": "createVoting",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "name": "VotingCreated",
+        "type": "event"
     },
-    vote: {
+    voted: {
+        "anonymous": false,
         "inputs": [
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "issuer",
+                "type": "address"
+            },
+            {
+                "indexed": false,
                 "internalType": "uint256",
                 "name": "projectId",
                 "type": "uint256"
             },
             {
+                "indexed": false,
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
             }
         ],
-        "name": "vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    totalSupply: {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-} as const;
+        "name": "Voted",
+        "type": "event"
+    }
+};

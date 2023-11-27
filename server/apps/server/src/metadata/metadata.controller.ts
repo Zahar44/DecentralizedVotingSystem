@@ -31,12 +31,10 @@ export class MetadataController {
         @Req() req: AuthRequest,
         @UploadedFile() file: Express.Multer.File,
     ) {
-        return this.metadata.create({
+        return this.metadata.setImage({
             tokenId: dto.tokenId,
             token: '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
             account: req.user.address,
-            name: dto.name,
-            description: dto.description,
             image: file.buffer,
         });
     }
@@ -52,7 +50,9 @@ export class MetadataController {
         }));
 
         return {
-            name: resp.title,
+            tokenId: resp.tokenId,
+            name: resp.name,
+            description: resp.description,
             image: `${req.protocol}://${req.get('Host')}${req.originalUrl}/image`,
         };
     }
@@ -75,9 +75,11 @@ export class MetadataController {
         @Req() req: Request,
     ): Promise<GetMetadataResponseDto[]> {
         const resp = await firstValueFrom(this.metadata.findAll({}));
-        return resp.data.map((d) => ({
-            name: d.title,
-            image: `${req.protocol}://${req.get('Host')}${req.originalUrl}/${d.tokenId}/image`
+        return (resp.data || []).map((d): GetMetadataResponseDto => ({
+            tokenId: d.tokenId,
+            name: d.name,
+            description: d.description,
+            image: `${req.protocol}://${req.get('Host')}${req.originalUrl}/${d.tokenId}/image`,
         }));
     }
 }

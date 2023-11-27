@@ -19,6 +19,7 @@ async function bootstrap() {
         },
     });
 
+    await app.init();
     await app.startAllMicroservices();
 
     if (module.hot) {

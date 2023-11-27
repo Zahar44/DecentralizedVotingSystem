@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { ContractResponseHandler } from "./ContractResponseHandler";
 import { VotingSystemABI } from "../abi/VotingSystem";
+import { CreateVotingProps, VoteProps } from "./types";
 
 export class VotingSystemHandler {
     private readonly api: ethers.Contract;
@@ -11,9 +12,18 @@ export class VotingSystemHandler {
         this.runner = runner;
     }
 
-    public async createProject() {
+    public async createProject(props: CreateVotingProps) {
         try {
-            const resp: ethers.ContractTransactionResponse = await this.api?.createVoting();
+            const resp: ethers.ContractTransactionResponse = await this.api?.createVoting(props);
+            return new ContractResponseHandler(resp, this.runner.provider!);
+        } catch(error) {
+            return new ContractResponseHandler(false, this.runner.provider!);
+        }
+    }
+
+    public async vote(props: VoteProps) {
+        try {
+            const resp: ethers.ContractTransactionResponse = await this.api?.vote(props);
             return new ContractResponseHandler(resp, this.runner.provider!);
         } catch(error) {
             return new ContractResponseHandler(false, this.runner.provider!);

@@ -22,7 +22,7 @@ export class AllExceptionFilter implements ExceptionFilter {
             [errors, status] = this.getDefaultExceptionErrors();
         }
 
-        this.logger.error(`Error on ${req.url}, ${errors.join(',')}`);
+        this.logger.error(`Error on ${req.url}; got ${exception}; sent ${errors.join(',')}`);
 
         resp
             .status(status)

@@ -8,9 +8,10 @@ export class GetMetadataRequestDto {
 }
 
 export interface GetMetadataResponseDto {
-    name?: string;
-    description?: string;
-    image?: string;
+    name: string;
+    description: string;
+    image: string;
+    tokenId: number;
     attributes?: MetadataAttribute[];
 }
 
